@@ -1,0 +1,16 @@
+{
+    "name": "igor/transactions",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Igor Suvorov",
+            "email": "suvorovis@yandex.ru"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "transactions\\": "app"
+        }
+    }
+}

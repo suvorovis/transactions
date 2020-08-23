@@ -1,0 +1,28 @@
+version: '3.7'
+services:
+  web:
+    build: ./docker/web
+    container_name: transactions_web
+    restart: always
+    volumes:
+      - .:/var/www/html
+    ports:
+      - 8080:80
+    networks:
+      - backend
+  mysql:
+    image: mysql:8
+    container_name: transactions_mysql
+    restart: always
+    volumes:
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - MYSQL_ROOT_PASSWORD=p@ssw0rd
+      - MYSQL_DATABASE=transactions
+    ports:
+      - 33060:3306
+    networks:
+      - backend
+
+networks:
+  backend:
