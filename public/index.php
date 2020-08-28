@@ -1,17 +1,17 @@
 <?php
 require_once '../vendor/autoload.php';
 require_once '../routes/web.php';
+require_once '../config/config.php';
 
 $app = new transactions\Application();
 $app->run();
 
 //TODO:
-//session
-//model
-//config
-//exception handle
 //layout
-//database driver
+
+
+//exception handle
+
 //transaction+high load
 //annotations
 //class moving
@@ -19,4 +19,8 @@ $app->run();
 //php ini show notices
 //no route exception
 //exceptions hierarchy
-//github
+//use bcmath
+//readme
+//csrf
+//session expire
+//logs

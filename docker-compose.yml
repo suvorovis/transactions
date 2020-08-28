@@ -17,8 +17,10 @@ services:
     volumes:
       - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
-      - MYSQL_ROOT_PASSWORD=p@ssw0rd
       - MYSQL_DATABASE=transactions
+      - MYSQL_USER=transactions
+      - MYSQL_ROOT_PASSWORD=p@ssw0rd
+      - MYSQL_PASSWORD=p@ssw0rd
     ports:
       - 33060:3306
     networks:

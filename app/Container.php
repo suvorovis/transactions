@@ -50,9 +50,9 @@ class Container
                     throw new RuntimeException("Can't get class '{$class}' argument '{$param->getName()}'");
                 }
                 $args[] = $param->getDefaultValue();
+            } else {
+                $args[] = $this->get($paramClass->getName());
             }
-            
-            $args[] = $this->get($paramClass->getName());
         }
         
         return self::$services[$class] = $reflection->newInstanceArgs($args);

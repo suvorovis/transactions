@@ -1,7 +1,13 @@
 <?php
 
+use transactions\Controllers\LoginController;
+use transactions\Controllers\UsersController;
+use transactions\Enums\Roles;
 use transactions\Router;
 
-Router::post('users/update', \transactions\Controllers\UsersController::class, 'update');
-Router::get('users/show', \transactions\Controllers\UsersController::class, 'show');
-Router::get('', \transactions\Controllers\UsersController::class, 'show');
+Router::get('', UsersController::class, 'show', [Roles::USER]);
+Router::get('users/show', UsersController::class, 'show', [Roles::USER]);
+Router::post('users/update', UsersController::class, 'update', [Roles::USER]);
+
+Router::get('login', LoginController::class, 'show');
+Router::post('auth', LoginController::class, 'auth');

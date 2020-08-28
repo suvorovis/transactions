@@ -7,7 +7,9 @@
             "email": "suvorovis@yandex.ru"
         }
     ],
-    "require": {},
+    "require": {
+      "ext-mysqli": "*"
+    },
     "autoload": {
         "psr-4": {
             "transactions\\": "app"

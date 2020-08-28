@@ -2,13 +2,11 @@
 
 namespace transactions\Controllers;
 
-use transactions\View;
-
 class UsersController extends AbstractController
 {
-    public function show()
+    public function show(): string
     {
-        return (new View('users/show', $this->request->getParams()))->render();
+        return $this->view->render('users/show', $this->request->getParams());
     }
     
     public function update()

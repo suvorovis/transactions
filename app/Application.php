@@ -3,6 +3,7 @@
 namespace transactions;
 
 use ReflectionException;
+use RuntimeException;
 
 class Application
 {
@@ -17,6 +18,16 @@ class Application
         
         /** @var Route $route */
         $route = $router->getRoute($request);
+        
+        Session::start();
+        
+        if (!$route->allowedToAll() && !Session::authorized()) {
+            Router::redirect('login');
+        }
+        
+        if (!$route->allowedTo(Session::role())) {
+            throw new RuntimeException('Access denied');
+        }
         
         $controller = $container->get($route->getController());
         

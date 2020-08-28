@@ -27,18 +27,37 @@ class Router
         return $route;
     }
     
-    public static function get(string $route, string $controller, string $method): void
+    public static function redirect(string $uri): void
     {
-        self::register('get', $route, $controller, $method);
+        header("Location: /{$uri}");
+        die();
     }
     
-    public static function post(string $route, string $controller, string $method): void
-    {
-        self::register('post', $route, $controller, $method);
+    public static function get(
+        string $route,
+        string $controller,
+        string $method,
+        array $roles = []
+    ): void {
+        self::register('get', $route, $controller, $method, $roles);
     }
     
-    private static function register(string $type, string $uri, string $controller, string $method): void
-    {
+    public static function post(
+        string $route,
+        string $controller,
+        string $method,
+        array $roles = []
+    ): void {
+        self::register('post', $route, $controller, $method, $roles);
+    }
+    
+    private static function register(
+        string $type,
+        string $uri,
+        string $controller,
+        string $method,
+        array $roles = []
+    ): void {
         if (!class_exists($controller)) {
             throw new \RuntimeException("Wrong controller '{$controller}'");
         }
@@ -47,6 +66,6 @@ class Router
             throw new \RuntimeException("Wrong controller '{$controller}' method '{$method}'");
         }
         
-        self::$routes[$uri] = new Route($type, $uri, $controller, $method);
+        self::$routes[$uri] = new Route($type, $uri, $controller, $method, $roles);
     }
 }

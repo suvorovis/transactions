@@ -4,26 +4,11 @@ namespace transactions;
 
 class View
 {
-    /**
-     * @var string
-     */
-    private $path;
-    /**
-     * @var array
-     */
-    private $params;
-    
-    public function __construct(string $path, array $params)
+    public function render(string $templatePath, array $templateParams = []): string
     {
-        $this->path = "../templates/{$path}.html";
-        $this->params = $params;
-    }
-    
-    public function render()
-    {
-        extract($this->params, EXTR_OVERWRITE);
+        extract($templateParams, EXTR_SKIP);
         ob_start();
-        include($this->path);
+        include("../templates/{$templatePath}.html");
         return ob_get_clean();
     }
 }

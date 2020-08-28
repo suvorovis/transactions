@@ -36,4 +36,9 @@ class Request
     {
         return $this->path;
     }
+    
+    public function getParam(string $name): string
+    {
+        return $this->params[$name] ?? '';
+    }
 }
