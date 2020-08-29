@@ -13,6 +13,12 @@ class View
      */
     private $params;
     
+    /**
+     * View constructor.
+     *
+     * @param string $path
+     * @param array  $params
+     */
     public function __construct(string $path, array $params = [])
     {
         $this->path = $path;
@@ -21,6 +27,9 @@ class View
         }, $params);
     }
     
+    /**
+     * @return string
+     */
     public function render(): string
     {
         extract($this->params, EXTR_SKIP);

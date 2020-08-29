@@ -2,37 +2,59 @@
 
 namespace transactions;
 
+use transactions\Exceptions\NotFoundException;
+
 class Router
 {
+    /**
+     * @var array
+     */
     private static $routes = [];
     
     /**
      * @param Request $request
      *
      * @return Route
+     * @throws NotFoundException
      */
     public function getRoute(Request $request): Route
     {
-        if (!isset(self::$routes[$request->getPath()])) {
-            throw new \RuntimeException("Wrong route '{$request->getPath()}'");
+        if (!isset(self::$routes[ $request->getPath() ])) {
+            throw new NotFoundException("Wrong route '{$request->getPath()}'");
         }
         
         /** @var Route $route */
-        $route = self::$routes[$request->getPath()];
+        $route = self::$routes[ $request->getPath() ];
         
         if ($request->getType() !== $route->getType()) {
-            throw new \RuntimeException("Wrong route '{$request->getPath()}' type '{$request->getType()}'");
+            throw new NotFoundException("Wrong route '{$request->getPath()}' type '{$request->getType()}'");
         }
         
         return $route;
     }
     
-    public static function redirect(string $uri): void
+    /**
+     * @param string $uri
+     * @param array  $params
+     */
+    public static function redirect(string $uri, array $params = []): void
     {
+        if (!empty($params)) {
+            $uri .= '?' . http_build_query($params);
+        }
+        
         header("Location: /{$uri}");
         die();
     }
     
+    /**
+     * @param string $route
+     * @param string $controller
+     * @param string $method
+     * @param array  $roles
+     *
+     * @throws NotFoundException
+     */
     public static function get(
         string $route,
         string $controller,
@@ -42,6 +64,14 @@ class Router
         self::register('get', $route, $controller, $method, $roles);
     }
     
+    /**
+     * @param string $route
+     * @param string $controller
+     * @param string $method
+     * @param array  $roles
+     *
+     * @throws NotFoundException
+     */
     public static function post(
         string $route,
         string $controller,
@@ -51,6 +81,15 @@ class Router
         self::register('post', $route, $controller, $method, $roles);
     }
     
+    /**
+     * @param string $type
+     * @param string $uri
+     * @param string $controller
+     * @param string $method
+     * @param array  $roles
+     *
+     * @throws NotFoundException
+     */
     private static function register(
         string $type,
         string $uri,
@@ -59,13 +98,13 @@ class Router
         array $roles = []
     ): void {
         if (!class_exists($controller)) {
-            throw new \RuntimeException("Wrong controller '{$controller}'");
-        }
-    
-        if (!method_exists($controller, $method)) {
-            throw new \RuntimeException("Wrong controller '{$controller}' method '{$method}'");
+            throw new NotFoundException("Wrong controller '{$controller}'");
         }
         
-        self::$routes[$uri] = new Route($type, $uri, $controller, $method, $roles);
+        if (!method_exists($controller, $method)) {
+            throw new NotFoundException("Wrong controller '{$controller}' method '{$method}'");
+        }
+        
+        self::$routes[ $uri ] = new Route($type, $uri, $controller, $method, $roles);
     }
 }

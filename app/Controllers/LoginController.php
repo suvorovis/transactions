@@ -2,6 +2,7 @@
 
 namespace transactions\Controllers;
 
+use transactions\Exceptions\DatabaseQueryException;
 use transactions\Repositories\UserRepository;
 use transactions\Request;
 use transactions\Router;
@@ -21,6 +22,14 @@ class LoginController extends AbstractController
      */
     private $passwordManager;
     
+    /**
+     * LoginController constructor.
+     *
+     * @param Request         $request
+     * @param Validator       $validator
+     * @param UserRepository  $repository
+     * @param PasswordManager $passwordManager
+     */
     public function __construct(
         Request $request,
         Validator $validator,
@@ -32,6 +41,9 @@ class LoginController extends AbstractController
         $this->passwordManager = $passwordManager;
     }
     
+    /**
+     * @return array
+     */
     public function show(): array
     {
         if (Session::authorized()) {
@@ -39,26 +51,37 @@ class LoginController extends AbstractController
         }
         
         return [
-            'title' => 'Login',
-            'content' => new View('login')
+            'title'   => 'Login',
+            'content' => new View('login'),
         ];
     }
     
+    /**
+     * @throws DatabaseQueryException
+     */
     public function auth(): void
     {
         if (Session::authorized()) {
             Router::redirect('');
         }
-    
+        
         $login = $this->request->getParam('login');
+        if ($this->validator->isEmpty($login)) {
+            Router::redirect('login', ['message' => 'Fail: empty login']);
+        }
+        
         $user = $this->repository->getByLogin($login);
         if ($user->getId() === 0) {
-            Router::redirect('login');
+            Router::redirect('login', ['message' => 'Fail: wrong credentials']);
         }
-    
+        
         $password = $this->request->getParam('password');
+        if ($this->validator->isEmpty($login)) {
+            Router::redirect('login', ['message' => 'Fail: empty password']);
+        }
+        
         if (!$this->passwordManager->verify($password, $user->getPassword())) {
-            Router::redirect('login');
+            Router::redirect('login', ['message' => 'Fail: wrong credentials']);
         }
         
         Session::authorize($user->getLogin(), $user->getRole());

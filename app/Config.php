@@ -4,15 +4,27 @@ namespace transactions;
 
 class Config
 {
+    /**
+     * @var array
+     */
     private static $config = [];
     
-    public static function set(string $key, $value): void
+    /**
+     * @param string $key
+     * @param        $value
+     */
+    public static function set(string $key, string $value): void
     {
-        self::$config[$key] = $value;
+        self::$config[ $key ] = $value;
     }
     
-    public static function get(string $key)
+    /**
+     * @param string $key
+     *
+     * @return string|null
+     */
+    public static function get(string $key): ?string
     {
-        return self::$config[$key] ?? null;
+        return self::$config[ $key ] ?? null;
     }
 }

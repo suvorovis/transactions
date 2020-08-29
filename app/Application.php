@@ -2,13 +2,21 @@
 
 namespace transactions;
 
+use Exception;
 use ReflectionException;
-use RuntimeException;
+use transactions\Exceptions\AccessDeniedException;
+use transactions\Exceptions\DatabaseConnectionException;
+use transactions\Exceptions\DatabaseQueryException;
+use transactions\Exceptions\NotFoundException;
+use transactions\Exceptions\ServiceTreeConstructException;
+use transactions\Exceptions\WrongControllerResponseException;
 
 class Application
 {
     /**
-     * @throws ReflectionException
+     * @return string
+     * @throws ReflectionException|ServiceTreeConstructException|NotFoundException|AccessDeniedException
+     * @throws WrongControllerResponseException|DatabaseQueryException|DatabaseConnectionException
      */
     public function run(): string
     {
@@ -26,25 +34,42 @@ class Application
         }
         
         if (!$route->allowedTo(Session::role())) {
-            throw new RuntimeException('Access denied');
+            throw new AccessDeniedException('Access denied');
         }
         
         $controller = $container->get($route->getController());
         
         $response = $controller->{$route->getMethod()}();
-    
+        
         if (is_string($response)) {
             return $response;
         }
         
         if (is_array($response)) {
             return (new View('layout', [
-                'title' => $response['title'] ?? '',
+                'title'   => $response['title'] ?? '',
                 'content' => $response['content'] ?? '',
                 'message' => $request->getParam('message'),
             ]))->render();
         }
         
-        throw new RuntimeException('Wrong response format');
+        throw new WrongControllerResponseException('Wrong response format');
+    }
+    
+    /**
+     * @param Exception $e
+     *
+     * @return string
+     */
+    public function handleException(Exception $e): string
+    {
+        error_log("Error {$e->getCode()}({$e->getFile()} {$e->getLine()}):\n{$e->getMessage()}\n{$e->getTraceAsString()}");
+    
+        return (new View('layout', [
+            'title'   => 'Error occurred',
+            'content' => method_exists($e, 'getUserErrorDescription') ?
+                $e->getUserErrorDescription() :
+                'Something went wrong',
+        ]))->render();
     }
 }

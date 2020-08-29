@@ -2,6 +2,7 @@
 
 namespace transactions\Controllers;
 
+use transactions\Exceptions\DatabaseQueryException;
 use transactions\Repositories\UserRepository;
 use transactions\Request;
 use transactions\Router;
@@ -16,12 +17,24 @@ class UsersController extends AbstractController
      */
     private $repository;
     
+    /**
+     * UsersController constructor.
+     *
+     * @param Request        $request
+     * @param Validator      $validator
+     * @param UserRepository $repository
+     */
     public function __construct(Request $request, Validator $validator, UserRepository $repository)
     {
         parent::__construct($request, $validator);
         $this->repository = $repository;
     }
     
+    /**
+     * @return array
+     *
+     * @throws DatabaseQueryException
+     */
     public function show(): array
     {
         $user = $this->repository->getByLogin(Session::login());
@@ -33,11 +46,14 @@ class UsersController extends AbstractController
         $balance = number_format($user->getBalance(), 2, '.', '');
         
         return [
-            'title' => 'Profile',
+            'title'   => 'Profile',
             'content' => new View('users/show', compact('balance')),
         ];
     }
     
+    /**
+     * @throws DatabaseQueryException
+     */
     public function withdraw(): void
     {
         $user = $this->repository->getByLogin(Session::login());
@@ -48,16 +64,14 @@ class UsersController extends AbstractController
         
         $amount = $this->request->getParam('amount');
         if (!$this->validator->isAmount($amount)) {
-            $message = 'Fail: wrong amount';
-            Router::redirect("users/show?message={$message}");
+            Router::redirect('users/show', ['message' => 'Fail: wrong amount']);
         }
         
         $result = $this->repository->withdraw($user->getId(), $amount);
         if (!$result) {
-            $message = 'Fail: insufficient funds';
-            Router::redirect("users/show?message={$message}");
+            Router::redirect('users/show', ['message' => 'Fail: insufficient funds']);
         }
         
-        Router::redirect('users/show?message=Success');
+        Router::redirect('users/show', ['message' => 'Success']);
     }
 }

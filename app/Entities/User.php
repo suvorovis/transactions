@@ -4,10 +4,25 @@ namespace transactions\Entities;
 
 class User extends AbstractEntity
 {
+    /**
+     * @var int
+     */
     protected $id;
+    /**
+     * @var string
+     */
     protected $login;
+    /**
+     * @var string
+     */
     protected $password;
+    /**
+     * @var string
+     */
     protected $role;
+    /**
+     * @var float
+     */
     protected $balance;
     
     /**

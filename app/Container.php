@@ -4,26 +4,29 @@ namespace transactions;
 
 use ReflectionClass;
 use ReflectionException;
-use RuntimeException;
+use transactions\Exceptions\ServiceTreeConstructException;
 
 class Container
 {
+    /**
+     * @var array
+     */
     public static $services = [];
     
     /**
      * @param string $class
      *
      * @return object
-     * @throws RuntimeException|ReflectionException
+     * @throws ServiceTreeConstructException|ReflectionException
      */
     public function get(string $class): object
     {
         if (!class_exists($class)) {
-            throw new RuntimeException("Class '{$class}' doesn't exist");
+            throw new ServiceTreeConstructException("Class '{$class}' doesn't exist");
         }
         
-        if (isset(self::$services[$class])) {
-            return self::$services[$class];
+        if (isset(self::$services[ $class ])) {
+            return self::$services[ $class ];
         }
         
         $reflection = new ReflectionClass($class);
@@ -31,13 +34,13 @@ class Container
         $constructor = $reflection->getConstructor();
         
         if ($constructor === null) {
-            return self::$services[$class] = $reflection->newInstance();
+            return self::$services[ $class ] = $reflection->newInstance();
         }
-    
+        
         $params = $constructor->getParameters();
         
         if (count($params) === 0) {
-            return self::$services[$class] = $reflection->newInstance();
+            return self::$services[ $class ] = $reflection->newInstance();
         }
         
         $args = [];
@@ -47,7 +50,7 @@ class Container
             
             if ($paramClass === null) {
                 if (!$param->isOptional()) {
-                    throw new RuntimeException("Can't get class '{$class}' argument '{$param->getName()}'");
+                    throw new ServiceTreeConstructException("Can't get class '{$class}' argument '{$param->getName()}'");
                 }
                 $args[] = $param->getDefaultValue();
             } else {
@@ -55,6 +58,6 @@ class Container
             }
         }
         
-        return self::$services[$class] = $reflection->newInstanceArgs($args);
+        return self::$services[ $class ] = $reflection->newInstanceArgs($args);
     }
 }
