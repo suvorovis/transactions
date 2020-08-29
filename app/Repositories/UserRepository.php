@@ -30,8 +30,8 @@ class UserRepository extends AbstractRepository
     {
         $result = $this->db->real_query(
         "UPDATE `users`
-            WHERE `id` = {$userId} AND `balance` >= {$amount}
-            SET `balance` = `balance` - {$amount}"
+            SET `balance` = `balance` - {$amount}
+            WHERE `id` = {$userId} AND `balance` >= {$amount}"
         );
         
         return $result && $this->db->affected_rows === 1;

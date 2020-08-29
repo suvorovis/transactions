@@ -1,2 +1,12 @@
-<p>here will be user data</p>
-<?=$some;?>
+<form method="post" action="/users/withdraw">
+    <div>
+        <label>Balance: <?=$balance?></label>
+    </div>
+    <div>
+        <label for="amount">Amount:</label>
+        <input id="amount" type="text" name="amount" placeholder="0.00"/>
+    </div>
+    <div>
+        <button type="submit" onclick="this.disabled = true">Withdraw</button>
+    </div>
+</form>

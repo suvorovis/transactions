@@ -3,7 +3,7 @@
 namespace transactions\Controllers;
 
 use transactions\Request;
-use transactions\View;
+use transactions\Services\Validator;
 
 abstract class AbstractController
 {
@@ -12,13 +12,13 @@ abstract class AbstractController
      */
     protected $request;
     /**
-     * @var View
+     * @var Validator
      */
-    protected $view;
+    protected $validator;
     
-    public function __construct(Request $request, View $view)
+    public function __construct(Request $request, Validator $validator)
     {
         $this->request = $request;
-        $this->view = $view;
+        $this->validator = $validator;
     }
 }

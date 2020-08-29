@@ -1,26 +1,28 @@
 <?php
+
+namespace transactions;
+
 require_once '../vendor/autoload.php';
 require_once '../routes/web.php';
 require_once '../config/config.php';
 
-$app = new transactions\Application();
-$app->run();
+$app = new Application();
+echo $app->run();
 
 //TODO:
-//layout
-
-
-//exception handle
-
-//transaction+high load
-//annotations
-//class moving
-//tests
-//php ini show notices
-//no route exception
 //exceptions hierarchy
-//use bcmath
+//exception handle
+//no route exception
+//logs
+
+//php ini show notices
+
+//annotations
+
 //readme
+
 //csrf
 //session expire
-//logs
+
+//ajax
+//bootstrap

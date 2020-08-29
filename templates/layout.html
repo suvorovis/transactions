@@ -1,0 +1,21 @@
+<?php namespace transactions; ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><?=$title?></title>
+</head>
+<body>
+<h1><?=Config::get('app.name')?></h1>
+<h2>
+    <?=$title?>
+    <?php if(!empty(Session::login())) {
+        echo ' - ' . Session::login() . ' (<a href="/logout">logout</a>)';
+    };?>
+</h2>
+<?=$content?>
+<?php if(!empty($message)) :?>
+<h3><?=$message?></h3>
+<?php endif; ?>
+</body>
+</html>

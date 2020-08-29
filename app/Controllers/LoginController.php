@@ -6,6 +6,7 @@ use transactions\Repositories\UserRepository;
 use transactions\Request;
 use transactions\Router;
 use transactions\Services\PasswordManager;
+use transactions\Services\Validator;
 use transactions\Session;
 use transactions\View;
 
@@ -22,23 +23,25 @@ class LoginController extends AbstractController
     
     public function __construct(
         Request $request,
-        View $view,
+        Validator $validator,
         UserRepository $repository,
         PasswordManager $passwordManager
     ) {
-        parent::__construct($request, $view);
+        parent::__construct($request, $validator);
         $this->repository = $repository;
         $this->passwordManager = $passwordManager;
-        $this->view = $view;
     }
     
-    public function show(): string
+    public function show(): array
     {
         if (Session::authorized()) {
             Router::redirect('');
         }
         
-        return $this->view->render('login');
+        return [
+            'title' => 'Login',
+            'content' => new View('login')
+        ];
     }
     
     public function auth(): void
@@ -60,5 +63,15 @@ class LoginController extends AbstractController
         
         Session::authorize($user->getLogin(), $user->getRole());
         Router::redirect('');
+    }
+    
+    public function logout(): void
+    {
+        if (!Session::authorized()) {
+            Router::redirect('login');
+        }
+        
+        Session::stop();
+        Router::redirect('login');
     }
 }

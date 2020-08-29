@@ -37,8 +37,12 @@ class Request
         return $this->path;
     }
     
-    public function getParam(string $name): string
+    public function getParam(string $name, bool $escape = true): string
     {
-        return $this->params[$name] ?? '';
+        $param = $this->params[$name] ?? '';
+        if ($escape) {
+            $param = htmlspecialchars($param);
+        }
+        return $param;
     }
 }

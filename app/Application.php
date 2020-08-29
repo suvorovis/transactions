@@ -10,7 +10,7 @@ class Application
     /**
      * @throws ReflectionException
      */
-    public function run(): void
+    public function run(): string
     {
         $container = new Container();
         $request = $container->get(Request::class);
@@ -31,6 +31,20 @@ class Application
         
         $controller = $container->get($route->getController());
         
-        echo $controller->{$route->getMethod()}();
+        $response = $controller->{$route->getMethod()}();
+    
+        if (is_string($response)) {
+            return $response;
+        }
+        
+        if (is_array($response)) {
+            return (new View('layout', [
+                'title' => $response['title'] ?? '',
+                'content' => $response['content'] ?? '',
+                'message' => $request->getParam('message'),
+            ]))->render();
+        }
+        
+        throw new RuntimeException('Wrong response format');
     }
 }

@@ -15,11 +15,11 @@ class Database extends \mysqli
         $socket = null
     ) {
         parent::__construct(
-            $host ?? Config::get('dbhost'),
-            $username ?? Config::get('dbuser'),
-            $passwd ?? Config::get('dbpassword'),
-            $dbname ?? Config::get('dbname'),
-            $port ?? Config::get('dbport'),
+            $host ?? Config::get('db.host'),
+            $username ?? Config::get('db.user'),
+            $passwd ?? Config::get('db.password'),
+            $dbname ?? Config::get('db.name'),
+            $port ?? Config::get('db.port'),
             $socket
         );
         
