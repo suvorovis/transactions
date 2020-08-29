@@ -2,6 +2,8 @@
 
 namespace transactions;
 
+use Exception;
+
 class Session
 {
     /**
@@ -75,6 +77,24 @@ class Session
     public static function authorized(): bool
     {
         return !empty(self::login());
+    }
+    
+    /**
+     * @throws Exception
+     */
+    public static function setCsrf(): void
+    {
+        if (!self::has('csrf')) {
+            self::set('csrf', bin2hex(random_bytes(32)));
+        }
+    }
+    
+    /**
+     * @return string
+     */
+    public static function csrf(): string
+    {
+        return self::get('csrf') ?? '';
     }
     
     /**

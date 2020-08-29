@@ -2,6 +2,7 @@
 
 namespace transactions;
 
+use transactions\Enums\RequestTypes;
 use transactions\Exceptions\NotFoundException;
 
 class Router
@@ -61,7 +62,7 @@ class Router
         string $method,
         array $roles = []
     ): void {
-        self::register('get', $route, $controller, $method, $roles);
+        self::register(RequestTypes::GET, $route, $controller, $method, $roles);
     }
     
     /**
@@ -78,7 +79,7 @@ class Router
         string $method,
         array $roles = []
     ): void {
-        self::register('post', $route, $controller, $method, $roles);
+        self::register(RequestTypes::POST, $route, $controller, $method, $roles);
     }
     
     /**

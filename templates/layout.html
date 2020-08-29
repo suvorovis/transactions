@@ -1,4 +1,3 @@
-<?php namespace transactions; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,16 +5,16 @@
     <title><?=$title?></title>
 </head>
 <body>
-<h1><?=Config::get('app.name')?></h1>
+<h1><?=getConfig('app.name')?></h1>
 <h2>
     <?=$title?>
-    <?php if(!empty(Session::login())) {
-        echo ' - ' . Session::login() . ' (<a href="/logout">logout</a>)';
+    <?php if(sessionHas('login')) {
+        echo ' - ' . login() . ' (<a href="/logout">logout</a>)';
     };?>
 </h2>
 <?=$content?>
-<?php if(Session::has('message')) :?>
-<h3><?=Session::flash('message')?></h3>
+<?php if(sessionHas('message')) :?>
+<h3><?=flash('message')?></h3>
 <?php endif; ?>
 </body>
 </html>

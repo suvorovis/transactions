@@ -4,7 +4,9 @@ namespace transactions;
 
 use Exception;
 use ReflectionException;
+use transactions\Enums\RequestTypes;
 use transactions\Exceptions\AccessDeniedException;
+use transactions\Exceptions\CsrfMismatchException;
 use transactions\Exceptions\DatabaseConnectionException;
 use transactions\Exceptions\DatabaseQueryException;
 use transactions\Exceptions\NotFoundException;
@@ -16,11 +18,12 @@ class Application
     /**
      * @return string
      * @throws ReflectionException|ServiceTreeConstructException|NotFoundException|AccessDeniedException
-     * @throws WrongControllerResponseException|DatabaseQueryException|DatabaseConnectionException
+     * @throws WrongControllerResponseException|DatabaseQueryException|DatabaseConnectionException|CsrfMismatchException
      */
     public function run(): string
     {
         Session::start();
+        Session::setCsrf();
     
         if (Session::authorized() && Session::expired()) {
             Session::stop();
@@ -38,6 +41,11 @@ class Application
         
         /** @var Route $route */
         $route = $router->getRoute($request);
+    
+        if ($route->getType() === RequestTypes::POST &&
+            Session::csrf() !== $request->getParam('csrf')) {
+            throw new CsrfMismatchException('CSRF mismatch');
+        }
         
         if (!$route->allowedToAll() && !Session::authorized()) {
             Router::redirect('login');
