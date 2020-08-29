@@ -62,9 +62,11 @@ class Session
      */
     public static function authorize(string $login, string $role): void
     {
-        self::set('login', $login);
-        self::set('role', $role);
-        self::set('time', microtime(true));
+        self::setArray([
+            'login' => $login,
+            'role' => $role,
+            'time' => microtime(true),
+        ]);
     }
     
     /**
@@ -89,6 +91,18 @@ class Session
     public static function role(): string
     {
         return self::get('role') ?? '';
+    }
+    
+    /**
+     * @param array $params
+     */
+    public static function setArray(array $params): void
+    {
+        self::open();
+        foreach ($params as $key => $value) {
+            $_SESSION[ $key ] = $value;
+        }
+        self::close();
     }
     
     /**
