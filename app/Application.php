@@ -20,14 +20,24 @@ class Application
      */
     public function run(): string
     {
+        Session::start();
+    
+        if (Session::authorized() && Session::expired()) {
+            Session::stop();
+            Session::set('message', 'Session expired');
+            Router::redirect('login');
+        }
+        
+        if (Session::authorized()) {
+            Session::refresh();
+        }
+        
         $container = new Container();
         $request = $container->get(Request::class);
         $router = $container->get(Router::class);
         
         /** @var Route $route */
         $route = $router->getRoute($request);
-        
-        Session::start();
         
         if (!$route->allowedToAll() && !Session::authorized()) {
             Router::redirect('login');
@@ -49,7 +59,6 @@ class Application
             return (new View('layout', [
                 'title'   => $response['title'] ?? '',
                 'content' => $response['content'] ?? '',
-                'message' => $request->getParam('message'),
             ]))->render();
         }
         

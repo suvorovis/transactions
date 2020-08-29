@@ -67,21 +67,25 @@ class LoginController extends AbstractController
         
         $login = $this->request->getParam('login');
         if ($this->validator->isEmpty($login)) {
-            Router::redirect('login', ['message' => 'Fail: empty login']);
+            Session::set('message', 'Fail: empty login');
+            Router::redirect('login');
         }
         
         $user = $this->repository->getByLogin($login);
         if ($user->getId() === 0) {
-            Router::redirect('login', ['message' => 'Fail: wrong credentials']);
+            Session::set('message', 'Fail: wrong credentials');
+            Router::redirect('login');
         }
         
         $password = $this->request->getParam('password');
         if ($this->validator->isEmpty($login)) {
-            Router::redirect('login', ['message' => 'Fail: empty password']);
+            Session::set('message', 'Fail: empty password');
+            Router::redirect('login');
         }
         
         if (!$this->passwordManager->verify($password, $user->getPassword())) {
-            Router::redirect('login', ['message' => 'Fail: wrong credentials']);
+            Session::set('message', 'Fail: wrong credentials');
+            Router::redirect('login');
         }
         
         Session::authorize($user->getLogin(), $user->getRole());

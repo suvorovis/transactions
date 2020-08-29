@@ -20,9 +20,4 @@ try {
 }
 
 //TODO:
-
 //csrf
-//session expire
-
-//ajax
-//bootstrap

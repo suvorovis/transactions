@@ -14,8 +14,8 @@
     };?>
 </h2>
 <?=$content?>
-<?php if(!empty($message)) :?>
-<h3><?=$message?></h3>
+<?php if(Session::has('message')) :?>
+<h3><?=Session::flash('message')?></h3>
 <?php endif; ?>
 </body>
 </html>

@@ -40,6 +40,7 @@ class UsersController extends AbstractController
         $user = $this->repository->getByLogin(Session::login());
         if ($user->getId() === 0) {
             Session::stop();
+            Session::set('message', 'Fail: authorize error');
             Router::redirect('login');
         }
         
@@ -59,19 +60,23 @@ class UsersController extends AbstractController
         $user = $this->repository->getByLogin(Session::login());
         if ($user->getId() === 0) {
             Session::stop();
+            Session::set('message', 'Fail: authorize error');
             Router::redirect('login');
         }
         
         $amount = $this->request->getParam('amount');
         if (!$this->validator->isAmount($amount)) {
-            Router::redirect('users/show', ['message' => 'Fail: wrong amount']);
+            Session::set('message', 'Fail: wrong amount');
+            Router::redirect('users/show');
         }
         
         $result = $this->repository->withdraw($user->getId(), $amount);
         if (!$result) {
-            Router::redirect('users/show', ['message' => 'Fail: insufficient funds']);
+            Session::set('message', 'Fail: insufficient funds');
+            Router::redirect('users/show');
         }
-        
-        Router::redirect('users/show', ['message' => 'Success']);
+    
+        Session::set('message', 'Success');
+        Router::redirect('users/show');
     }
 }
