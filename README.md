@@ -1,6 +1,33 @@
 # transactions
 
-# task
+## install
+
+```
+cp config/config.dev.php config/config.php 
+composer dump-autoload
+docker-compose up
+```
+
+## run
+
+http://localhost:8080
+
+login: test
+
+password: 123
+
+## db
+
+**dbname:** transactions
+
+**host:** localhost:33060
+
+**user:** transactions
+
+**pass:** p@ssw0rd
+
+## task
+
 Создать приложение по работе с финансовыми транзакциями.
 
 Необходимо создать минимальный каркас приложения:
