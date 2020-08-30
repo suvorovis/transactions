@@ -17,7 +17,7 @@ class Application
 {
     /**
      * @return string
-     * @throws ReflectionException|ServiceTreeConstructException|NotFoundException|AccessDeniedException
+     * @throws ReflectionException|ServiceTreeConstructException|NotFoundException|AccessDeniedException|Exception
      * @throws WrongControllerResponseException|DatabaseQueryException|DatabaseConnectionException|CsrfMismatchException
      */
     public function run(): string

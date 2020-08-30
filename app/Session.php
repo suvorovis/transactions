@@ -11,6 +11,7 @@ class Session
      */
     public static function start(): bool
     {
+        session_name(Config::get('session.name'));
         return session_start(['read_and_close' => true]);
     }
     
@@ -28,6 +29,7 @@ class Session
     public static function open(): bool
     {
         if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_name(Config::get('session.name'));
             return session_start();
         }
         return true;
